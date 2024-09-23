@@ -2,7 +2,6 @@
   "name": "Fireproof Console",
   "version": "0.1",
   "description": "Developer tool for managing Fireproof databases",
-  "devtools_page": "devtools.html",
   "permissions": [
     "storage",
     "activeTab",
