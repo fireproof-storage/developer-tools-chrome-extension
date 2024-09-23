@@ -1,0 +1,41 @@
+{
+  "name": "Fireproof Console",
+  "version": "0.1",
+  "description": "Developer tool for managing Fireproof databases",
+  "devtools_page": "devtools.html",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "manifest_version": 3,
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/__vite-browser-external-Dq6FBzox.js",
+        "assets/gateway-IZRHJWPE-BxrYi0sr.js",
+        "assets/index-B0W44gDG.js",
+        "assets/index-CZTnwKAA.js",
+        "assets/key-bag-indexdb-NFNGAXN7-D5PzO3Ag.js",
+        "assets/index-BpOJRVZN.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "Show Fireproof Console",
+    "default_icon": "assets/fp-logo.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "48": "assets/fp-logo.png",
+    "128": "assets/fp-logo.png"
+  }
+}
