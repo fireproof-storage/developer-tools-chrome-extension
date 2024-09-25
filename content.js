@@ -2,16 +2,22 @@
   const overlayId = "fireproof-overlay";
   const existingOverlay = document.getElementById(overlayId);
 
+  function hideOverlay(overlay) {
+    overlay.style.transform = "translateX(100%)";
+    console.log("Fireproof overlay hidden");
+  }
+
+  function showOverlay(overlay) {
+    overlay.style.transform = "translateX(0)";
+    console.log("Fireproof overlay shown");
+  }
+
   if (existingOverlay) {
     // If the overlay exists, toggle its visibility
     if (existingOverlay.style.transform === "translateX(0px)") {
-      // If visible, hide it
-      existingOverlay.style.transform = "translateX(100%)";
-      console.log("Fireproof overlay hidden");
+      hideOverlay(existingOverlay);
     } else {
-      // If hidden, show it
-      existingOverlay.style.transform = "translateX(0)";
-      console.log("Fireproof overlay shown");
+      showOverlay(existingOverlay);
     }
   } else {
     // If the overlay doesn't exist, create and inject it
@@ -101,12 +107,26 @@
           "close-fireproof-overlay"
         );
         closeButton.addEventListener("click", () => {
-          overlayContainer.style.transform = "translateX(100%)";
+          hideOverlay(overlayContainer);
+        });
+
+        // Close overlay when clicking outside
+        document.addEventListener("click", (event) => {
+          if (!overlayContainer.contains(event.target) && overlayContainer.style.transform === "translateX(0px)") {
+            hideOverlay(overlayContainer);
+          }
+        });
+
+        // Close overlay when pressing Esc key
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && overlayContainer.style.transform === "translateX(0px)") {
+            hideOverlay(overlayContainer);
+          }
         });
 
         // Animate the overlay sliding in
         requestAnimationFrame(() => {
-          overlayContainer.style.transform = "translateX(0)";
+          showOverlay(overlayContainer);
         });
 
         console.log("Fireproof overlay injected and shown");
