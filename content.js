@@ -26,7 +26,7 @@
       "/assets/gateway-7OM6OSYK-CNqGBlqM.js",
       "/assets/index-B0W44gDG.js",
       "/assets/index-DaMzc1tV.js",
-      "/assets/key-bag-indexdb-BWEM53ZX-Ca8QT7Zz.js"
+      "/assets/key-bag-indexdb-BWEM53ZX-Ca8QT7Zz.js",
     ];
     const css = chrome.runtime.getURL("/assets/index-DRzwk_cv.css");
     console.log(jsFiles, css);
@@ -72,6 +72,15 @@
           // padding: 20px;
           background-color: var(--background);
         }
+        #resizer {
+          position: absolute;
+          top: 0;
+          left: -20px; /* Increase the resize area */
+          width: 30px; /* Increase the resize area */
+          height: 100%;
+          cursor: ew-resize;
+          z-index: 10000;
+        }
     `;
 
     // Fetch the CSS content and append it to overlayHTML
@@ -90,6 +99,7 @@
         overlayHTML += `
       </style>
       <div id="overlay-content">
+        <div id="resizer"></div>
         <button id="close-fireproof-overlay">Close</button>
         <div id="root"></div>
       </div>
@@ -112,14 +122,20 @@
 
         // Close overlay when clicking outside
         document.addEventListener("click", (event) => {
-          if (!overlayContainer.contains(event.target) && overlayContainer.style.transform === "translateX(0px)") {
+          if (
+            !overlayContainer.contains(event.target) &&
+            overlayContainer.style.transform === "translateX(0px)"
+          ) {
             hideOverlay(overlayContainer);
           }
         });
 
         // Close overlay when pressing Esc key
         document.addEventListener("keydown", (event) => {
-          if (event.key === "Escape" && overlayContainer.style.transform === "translateX(0px)") {
+          if (
+            event.key === "Escape" &&
+            overlayContainer.style.transform === "translateX(0px)"
+          ) {
             hideOverlay(overlayContainer);
           }
         });
@@ -130,6 +146,39 @@
         });
 
         console.log("Fireproof overlay injected and shown");
+
+        // Make the overlay resizable from the left
+        const resizer = shadowRoot.getElementById("resizer");
+        let isResizing = false;
+
+        resizer.addEventListener("mousedown", (e) => {
+          isResizing = true;
+          document.addEventListener("mousemove", resizeOverlay);
+          document.addEventListener("mouseup", stopResizing);
+          // Disable text selection on the overlay
+          overlayContainer.style.userSelect = "none";
+        });
+
+        function resizeOverlay(e) {
+          if (isResizing) {
+            const newWidth = window.innerWidth - e.clientX;
+            overlayContainer.style.width = `${newWidth}px`;
+            // Keep the cursor in place
+            document.body.style.cursor = "ew-resize";
+            document.body.style.userSelect = "none";
+          }
+        }
+
+        function stopResizing() {
+          isResizing = false;
+          document.removeEventListener("mousemove", resizeOverlay);
+          document.removeEventListener("mouseup", stopResizing);
+          // Reset cursor style
+          document.body.style.cursor = "";
+          document.body.style.userSelect = "";
+          // Re-enable text selection on the overlay
+          overlayContainer.style.userSelect = "";
+        }
       })
       .catch((error) => console.error("Error loading CSS:", error));
   }
